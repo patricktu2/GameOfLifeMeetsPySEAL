@@ -1,0 +1,1 @@
+python3 -u GameOfLife/server.py 2>&1 | tee log_server

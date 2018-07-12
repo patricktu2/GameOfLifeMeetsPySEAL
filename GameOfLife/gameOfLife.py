@@ -1,29 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-@author: Kathrin
-
+@author: Patrick Tu & Kathrin Witzlsperger
 """
 
-import numpy
+import numpy as np
 import random
 import encryption
 import time
+import socket
+from io import BytesIO
+import sys
 
 
 class GameOfLife:
+    '''
+    This class models Conways Game of Life as a simple squared NxN grid, where each cell in the grid
+    can have the values 1 (alive) or 0 (dead). Furthermore, an instance method updates the generation
+    t of the grid to generation t+1.
+    '''
 
     def __init__(self, N):
-        """ Set up Conway's Game of Life. """
+        """
+        Set up Conway's Game of Life and initialize a random configuration of dead and alive
+        cells on the board.
+        """
 
         # dimension of grid (N*N = number of cells)
         self.N = N
         # matrix representing old generation
-        self.old_grid = numpy.zeros(N * N, dtype='i').reshape(N, N)
+        self.old_grid = np.zeros(N * N, dtype='i').reshape(N, N)
         # matrix representing new generation
-        self.new_grid = numpy.zeros(N * N, dtype='i').reshape(N, N)
+        self.new_grid = np.zeros(N * N, dtype='i').reshape(N, N)
         # matrix to store live neighbours of each cell
-        self.live_neighbours_grid = numpy.zeros(N * N, dtype='i').reshape(N, N)
+        self.live_neighbours_grid = np.zeros(N * N, dtype='i').reshape(N, N)
 
         # set up a random initial configuration for the grid
         # each point is either alive or dead, represented by integer values of 1 and 0, respectively
@@ -36,6 +46,41 @@ class GameOfLife:
 
         # initialize encryption
         self.encryption = encryption.Encryption()
+
+    @staticmethod
+    def receive_complete_bytestream(client_socket, MESSAGE_SIZE, MAX_BUFFER_SIZE):
+        '''
+        Handles receiving data bytestream of client side sockets so that it is
+        complete based on a fixed byte size and returns complete byte string
+        '''
+
+        bytes_received = 0
+        # start with empty byte message
+        input_from_server_bytes = b''
+
+        # QUOTE FROM DOCUMENTATION:
+        # "Now we come to the major stumbling block of sockets - send and recv operate on the network buffers.
+        # They do not necessarily handle all the bytes you hand them (or expect from them), [...]"
+        # Hence while loop to ensure we get the whole byte stream to deserialize
+
+        while bytes_received < MESSAGE_SIZE:
+            # receive bytestream from socket connection
+            current_input = client_socket.recv(MAX_BUFFER_SIZE)
+
+            # Did we receive the whole message? How much did we receive?
+            current_input_size = sys.getsizeof(current_input)
+            print(current_input_size, " bytes received")
+
+            #if we receive an empty message something is odd
+            if current_input == b'':
+                raise RuntimeError("socket connection broken")
+
+            #Update size condition to exit the loop
+            bytes_received = bytes_received + current_input_size
+            #appending current input to whole input byte message
+            input_from_server_bytes = input_from_server_bytes + current_input
+
+        return input_from_server_bytes
 
     def live_neighbours(self):
         """
@@ -72,49 +117,108 @@ class GameOfLife:
                 # store number of neighbours in corresponding matrix
                 self.live_neighbours_grid[i][j] = number_of_live_neighbours
 
-    def update_grid(self, server_to_client_queue, client_to_server_queue):
+    def update_grid(self, server_to_client_queue, client_to_server_queue, homomorphic_encryption):
         '''
-        updates the grid of the game using homomprhpic encryption. Computation is done by a
-        simulated threaded server via queue communication
+        updates the grid of the game depending on the boolean homomorphic_encryption parameter either using homomorphic encryption on a
+        threaded simulated server or directly computing the next grid using a (remote) socket TCP server
+
         :param server_to_client_queue: Queue used for communication from server to client
         :param client_to_server_queue:  Queue used for communication from client to (simulated) server
+        :param homomorphic_encryption: Boolean variable; True of homomorphic encryption is ticked and should be used for the grid update
         :return:
         '''
 
-        print("[CLIENT]old grid:")
+        print("[CLIENT/update_grid] old grid:")
         print(self.old_grid)
 
-        # compute live neighbour grid
-        self.live_neighbours()
-        print("[CLIENT] live neighbour grid:")
-        print(self.live_neighbours_grid)
+        if (homomorphic_encryption == True):
+            '''
+            If homomorphic encryption is true, we use our simulated server realized by using threads and message queues
+            to perform the update of the game based on the encrypted operation in the threaded server. This workaround has
+            been chosen because the Pyseal instances such as Ciphertext() and Context() can't be serialized for a transfer using
+            sockets.
+            '''
 
-        # encrypt old grid and live neighbour grid
-        encrypted_old_grid = self.encryption.encrypt_old_grid(self.old_grid, self.N)
-        encrypted_live_neighbours_grid = self.encryption.encrypt_live_neighbours_grid(self.live_neighbours_grid, self.N)
+            # compute live neighbour grid
+            self.live_neighbours()
+            print("[CLIENT/update_grid] live neighbour grid:")
+            print(self.live_neighbours_grid)
 
-        # Put encrypted old grid and live neighbour in a dicitonary to send to server as a massage
-        message = {"encrypted_old_grid": encrypted_old_grid,
-                   "encrypted_live_neighbours_grid": encrypted_live_neighbours_grid}
+            # encrypt old grid and live neighbour grid
+            encrypted_old_grid = self.encryption.encrypt_old_grid(self.old_grid, self.N)
+            encrypted_live_neighbours_grid = self.encryption.encrypt_live_neighbours_grid(self.live_neighbours_grid, self.N)
 
-        # send encrypted message to simulated server via queue
-        client_to_server_queue.put(message)
-        print("[CLIENT] Put message into client to server queue")
+            # Put encrypted old grid and live neighbour in a dictionary to send to server as a message
+            message = {"encrypted_old_grid": encrypted_old_grid,
+                       "encrypted_live_neighbours_grid": encrypted_live_neighbours_grid}
 
-        # waiting until get a reply in server to client queue
-        while server_to_client_queue.qsize() == 0:
-            print("[CLIENT] Client thread waiting for server reply")
-            time.sleep(0.1)
+            # send encrypted message to simulated server via queue
+            client_to_server_queue.put(message)
+            print("[CLIENT/update_grid] Put message into client to server queue")
 
-        # receive and fetch reply from server
-        encrypted_new_grid = server_to_client_queue.get()
-        print("[CLIENT] fetch message from server to client queue")
-        print("[CLIENT] Message received from server:", encrypted_new_grid)
+            # waiting until get a reply in server to client queue
+            while server_to_client_queue.qsize() == 0:
+                print("[CLIENT/update_grid] Client thread waiting for server reply")
+                time.sleep(0.001)
 
-        # decrypt new grid and set it as the current/new grid of the game
-        self.new_grid = self.encryption.decrypt_new_grid(encrypted_new_grid, self.N)
-        print("[CLIENT] decrypted new grid:")
-        print(self.new_grid)
+            # receive and fetch reply from server
+            encrypted_new_grid = server_to_client_queue.get()
+            print("[CLIENT/update_grid] fetch message from server to client queue")
+            print("[CLIENT/update_grid] Encrypted Message received from simulated-server")
 
-        # new configuration becomes the old configuration for the next generation.
-        self.old_grid = self.new_grid
+            # decrypt new grid and set it as the current/new grid of the game
+            self.new_grid = self.encryption.decrypt_new_grid(encrypted_new_grid, self.N)
+            print("[CLIENT/update_grid] decrypted new grid:")
+            print(self.new_grid)
+
+            # new configuration becomes the old configuration for the next generation.
+            self.old_grid = self.new_grid
+
+        else:
+            '''
+            If homomorphic encryption is not chosen, we can use are initial distributed architecture usuing TCP/Socket
+            communication with a server.
+            '''
+            # Set up network communication parameter to communicate with remote server
+            SERVER_ADRESS ="127.0.0.1"
+            PORT = 12345
+
+            # Establish connection to remote server
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #get client socket
+            client_socket.connect((SERVER_ADRESS, PORT)) # connect to the server
+            print("[CLIENT/update_grid] Client connection established at ", SERVER_ADRESS,":",PORT)
+
+            # Serialize current grid state as byte string for sever transmission
+            with BytesIO() as b:
+                np.save(b, self.old_grid)
+                old_grid_serialized = b.getvalue()
+            print("[CLIENT/update_grid] Grid serialized for socket communication")
+
+            # measure size of the message to ensure that server receives the whole message
+            size=sys.getsizeof(old_grid_serialized)
+            print("[CLIENT/update_grid] Size of the message in bytes: ", size)
+
+            # send to server
+            out = old_grid_serialized
+            client_socket.sendall(out)
+            print("[CLIENT/update_grid] Message sent to server via socket")
+
+            #Sever answer is the new grid state as a bytestream
+            answer_from_server = GameOfLife.receive_complete_bytestream(client_socket, MESSAGE_SIZE=size, MAX_BUFFER_SIZE=65536)
+
+            try:
+                grid_by_server = np.load(BytesIO(answer_from_server)) #deserialize byte server reply to a np array
+                print("[CLIENT/update_grid] Server Reply:\n", grid_by_server)
+            except ValueError:
+                print("[CLIENT/update_grid] Value error occured")
+
+            print("[CLIENT/update_grid] Not-encrypted message received from server")
+            print("[CLIENT/update_grid] decrypted new grid:")
+            print(self.new_grid)
+
+            #update grid states
+            self.new_grid = grid_by_server
+            self.old_grid = self.new_grid
+
+            #close connection after message received
+            client_socket.close()

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+# ------------------------------ start client -------------------------
 # tmux kill-session -t "Life_of_Game"
 tmux new-session -s "Life_of_Game" -n "Client" -d
 tmux send-keys -t "Life_of_Game:0" './client -D' ENTER
@@ -10,15 +12,16 @@ tmux send-keys -t "Life_of_Game:0" '  exit $status' ENTER
 tmux send-keys -t "Life_of_Game:0" 'fi' ENTER
 sleep 1
 
-# New version doesn't use the real server anymore
-# tmux new-window -t "Life_of_Game:1" -n "Server"
-# tmux send-keys -t "Life_of_Game:1" './server -D' ENTER
-# tmux send-keys -t "Life_of_Game:1" 'status=$?' ENTER
-# tmux send-keys -t "Life_of_Game:1" 'if [ $status -ne 0 ]; then' ENTER
-# tmux send-keys -t "Life_of_Game:1" '  echo "Failed to start server: $status"' ENTER
-# tmux send-keys -t "Life_of_Game:1" '  exit $status' ENTER
-# tmux send-keys -t "Life_of_Game:1" 'fi' ENTER
-# sleep 1
+
+# ------------------------------ start server -------------------------
+tmux new-window -t "Life_of_Game:1" -n "Server"
+tmux send-keys -t "Life_of_Game:1" './server -D' ENTER
+tmux send-keys -t "Life_of_Game:1" 'status=$?' ENTER
+tmux send-keys -t "Life_of_Game:1" 'if [ $status -ne 0 ]; then' ENTER
+tmux send-keys -t "Life_of_Game:1" '  echo "Failed to start server: $status"' ENTER
+tmux send-keys -t "Life_of_Game:1" '  exit $status' ENTER
+tmux send-keys -t "Life_of_Game:1" 'fi' ENTER
+sleep 1
 
 # Naive check runs checks once a minute to see if either of the processes exited.
 # This illustrates part of the heavy lifting you need to do if you want to run

@@ -1,3 +1,6 @@
+# Starts the docker container and runs it
+# Please adjust the commands according to your operating system
+
 
 # For Ubuntu (Kathrin)
 #sudo docker rm gameOfLife

@@ -13,6 +13,7 @@ RUN ./configure
 RUN make
 ENV LD_LIBRARY_PATH SEAL/bin:$LD_LIBRARY_PATH
 
+
 # Build SEAL Python wrapper
 
 COPY /SEALPython /SEAL/SEALPython
@@ -33,6 +34,7 @@ ENV PYTHONPATH $PYTHONPATH:/SEAL/SEALPython:/SEAL/bin
 
 # return to SEAL root directory
 WORKDIR /SEAL
+
 
 # execute
 COPY server server

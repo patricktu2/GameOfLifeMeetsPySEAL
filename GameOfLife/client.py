@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-@author: Kathrin
+@author: Patrick Tu & Kathrin Witzlsperger
 
 """
 
 import tkinter
+from tkinter import *
 import time
 from time import gmtime, strftime
 import threading
@@ -23,22 +24,22 @@ class Gui:
         
         # grid on canvas
         self.canvas = tkinter.Canvas(root,
-                                     width=self.dim*15,
-                                     height=self.dim*15,
+                                     width=self.dim*30,
+                                     height=self.dim*30,
                                      background='white')
-        self.canvas.grid(row=0, column=1)
+        self.canvas.grid(row=0, column=0)
         self.rect = [[None for row in range(self.dim)] for col in range(self.dim)]
         for row in range(self.dim):
             for col in range(self.dim):
-                self.rect[row][col] = self.canvas.create_rectangle(row*15, col*15,
-                                                                  (row+1)*15,
-                                                                  (col+1)*15,
+                self.rect[row][col] = self.canvas.create_rectangle(row*30, col*30,
+                                                                  (row+1)*30,
+                                                                  (col+1)*30,
                                                                   width=1,
                                                                   fill='white',
                                                                   outline='white')
         # start and stop button
         frame = tkinter.Frame(root)
-        frame.grid(row=0, column=0)
+        frame.grid(row=1, column=0)
         start_button = tkinter.Button(frame,
                                       text="Start",
                                       command=startCommand)                
@@ -47,6 +48,14 @@ class Gui:
                                      text="Stop",
                                      command=stopCommand)
         stop_button.pack()
+
+        # Option to use the application with or without homomorphic encryption as a check box
+        # default is True
+        self.homomorphic_encryption = BooleanVar()
+        self.homomorphic_encryption.set(True)
+        checkbox = Checkbutton( frame, text = "homomorphic encryption", variable = self.homomorphic_encryption )
+        checkbox.pack()
+
 
     def processIncoming(self):
         """Handle all messages currently in the queue, if any."""
@@ -100,10 +109,15 @@ class ThreadedClient:
         if self.running:
             self.gui.processIncoming()
         if not self.running:
-            print("[CLIENT] Not running")
+            print("[CLIENT / GUI] Not running")
         self.root.after(200, self.periodicCall)
 
     def workerThread(self):
+        '''
+        Creates a new GameOfLife board and starts an infinite loop where the state
+        of the will be iteratively updated by calling a update method
+        '''
+
         game = gameOfLife.GameOfLife(self.dim)
 
         # create queue for simulated client server communication
@@ -113,13 +127,16 @@ class ThreadedClient:
         server.start() # start server as a thread
 
         generation = 0
+
+
         while self.running:
-            print("generation", generation)
+            print("[CLIENT / GUI] Generation", generation)
+            print("[CLIENT / GUI] Homomorphic encryption == ", self.gui.homomorphic_encryption.get())
             if generation == 0:
                 msg = game.old_grid
             else:
-                time.sleep(0.25)
-                game.update_grid(self.server_to_client_queue, self.client_to_server_queue)
+                time.sleep(0.1)
+                game.update_grid(self.server_to_client_queue, self.client_to_server_queue, self.gui.homomorphic_encryption.get())
                 msg = game.new_grid
             generation += 1
             self.queue.put(msg)
@@ -128,17 +145,22 @@ class ThreadedClient:
         self.running = 0
         with self.queue.mutex:
             self.queue.queue.clear()
-        print("[CLIENT] Application stopped")
+        print("[CLIENT / GUI] Application stopped")
 
     def startApplication(self):
+        '''
+        Gets executed when the start button is pressed. Starts the application by creating
+        a worker thread and starting it
+        '''
+
         if self.running == 1:
-            print("[CLIENT] already running")
+            print("[CLIENT / GUI] already running")
             return
         self.running = 1
         self.thread = threading.Thread(target=self.workerThread)
         self.thread.setDaemon(True)
         self.thread.start()
-        print("[CLIENT] Application started")
+        print(" [CLIENT / GUI] Application started")
 
 if __name__== '__main__':
     print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))

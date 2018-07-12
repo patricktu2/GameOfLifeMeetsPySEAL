@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-@author: Kathrin
+@author: Patrick Tu & Kathrin Witzlsperger
 """
 import numpy
 import seal
@@ -15,9 +15,13 @@ from seal import EncryptionParameters, \
                  SEALContext
 
 class Encryption:
+    '''
+    Provides encryption / encoding methods to realize the homomorphic operations
+    '''
+
     
     def __init__(self):
-        
+
         # set parameters for encryption
         parms = EncryptionParameters()
         parms.set_poly_modulus("1x^2048 + 1")
@@ -37,13 +41,21 @@ class Encryption:
         
       
     def encrypt_live_neighbours_grid(self, live_neighbours_grid, dim):
-        
+        '''
+        Encodes the live neighbor matrix by applying following rules. If the cell [i][j] has 2 neighbors with 0,
+        3 neighbors with 2, and otherwise with -2. Afterwards encrypt it using PySEAL and store in a list
+
+        :param live_neighbours_grid: live neighbor matrix as np array
+        :param dim: dimension of the board
+        :return: List of encoded and encrypted neighbors
+        '''
+
         encrypted_live_neighbours_grid = []
-        
+
+        # Loop through every element of the board and encrypt it
         for i in range(dim):
            for j in range(dim):
-               
-               # transformation
+               # transformation / encoding rules
                if(live_neighbours_grid[i][j] == 2):
                    value = 0
                elif(live_neighbours_grid[i][j] == 3):
@@ -51,33 +63,47 @@ class Encryption:
                elif(live_neighbours_grid[i][j] > 3 or live_neighbours_grid[i][j] < 2):
                     value = -2
                 
-               # homomorphic encryption
+               # element-wise homomorphic encryption
                encrypted = Ciphertext()
                plain = self.encoder.encode(value)
-               #print("Encoded " + (str)(value) + " as polynomial " + plain.to_string() + " (live neighbour grid)") 
                self.encryptor.encrypt(plain, encrypted)
                encrypted_live_neighbours_grid.append(encrypted)
                 
         return encrypted_live_neighbours_grid
     
     def encrypt_old_grid(self, old_grid, dim):
+        '''
+        Encrypts each element in the old board state using PySEAL and adds it to a list
+
+        :param old_grid:
+        :param dim:
+        :return:
+        '''
         
         encrypted_old_grid = []
-       
+
+        # Loop through every element of the board and encrypt it
         for i in range(dim):
             for j in range(dim):
-                # homomorphic encryption
+                # element-wise homomorphic encryption
                 encrypted = Ciphertext()
                 value = old_grid[i][j]
                 plain = self.encoder.encode(value)
-                #print("Encoded " + (str)(value) + " as polynomial " + plain.to_string() + " (old grid)")
                 self.encryptor.encrypt(plain, encrypted)
                 encrypted_old_grid.append(encrypted)
                
         return encrypted_old_grid
     
     def decrypt_new_grid(self, encrypted_new_grid, dim):
-        
+        '''
+        Decrypts a homomorphic-encrypted grid by looping through every element,
+        decrypt it and then applying the decoding rules to get the new board state
+
+        :param encrypted_new_grid:
+        :param dim:
+        :return:
+        '''
+
         new_grid = numpy.zeros(dim*dim, dtype='i').reshape(dim,dim)
         
         for i in range(dim):
@@ -89,7 +115,7 @@ class Encryption:
               self.decryptor.decrypt(encrypted, plain)
               value = self.encoder.decode_int32(plain)
               
-              # transformation
+              # transformation / decoding rules
               if(value <= 0):
                   new_grid[i][j] = 0
               elif(value > 0):

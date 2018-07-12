@@ -12,7 +12,8 @@ Docker can be found here: https://docs.docker.com/install/
 
 ### XQuartz (Just needed for MacOS)
 To run GUI applications using Docker for Mac, it is neccessary to install XQuartz and later execute the start commands in the XQuartz terminal. The installation guide can be found here: https://www.xquartz.org/ 
-For Ubuntu this is not neccessary.
+
+(For Ubuntu this is not necessary)
 
 ## Run the Application
 There are shell scripts that are used to run the application. The most important ones are the following

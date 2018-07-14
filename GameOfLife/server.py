@@ -16,6 +16,8 @@ import random
 from io import BytesIO
 from time import gmtime, strftime
 
+from GameOfLife.helper import Helper
+
 '''
 This server is started in parallel with the client. For the extension of the functionality,
 the homomorphic operations could be further implemented in this class once the issues
@@ -84,37 +86,6 @@ class gol_methods:
 
 class Server:
 
-    def receive_complete_bytestream(self,conn, MESSAGE_SIZE, MAX_BUFFER_SIZE):
-        '''
-        Handles receiving data bytestream of server side sockets so that it is
-        complete based on a fixed byte size and returns the byte string
-        '''
-
-        bytes_received = 0
-        # start with empty byte message
-        input_from_client_bytes = b''
-    
-        # QUOTE FROM DOCUMENTATION:
-        # "Now we come to the major stumbling block of sockets - send and recv operate on the network buffers.
-        # They do not necessarily handle all the bytes you hand them (or expect from them), [...]"
-        # Hence while loop to ensure we get the whole byte stream to deserialize
-        while bytes_received < MESSAGE_SIZE:
-            # receive bytestream from socket connection
-            current_input = conn.recv(MAX_BUFFER_SIZE)
-            #if we receive an empty message something is odd
-            if current_input == b'':
-                raise RuntimeError("socket connection broken")
-    
-            # Did we receive the whole message? How much did we receive?
-            current_input_size = sys.getsizeof(current_input)
-            print(current_input_size, " bytes received")
-            #Update size condition to exit the loop
-            bytes_received = bytes_received + current_input_size
-            #appending current input to whole input byte message
-            input_from_client_bytes = input_from_client_bytes + current_input
-    
-        return input_from_client_bytes
-    
     def client_thread(self,conn, ip, port, MAX_BUFFER_SIZE = 65536):
         '''
         Thread starts when a client dials in
@@ -129,7 +100,7 @@ class Server:
         # sockets don't know if the whole msg has been transmitted, hence check for fixed msg size
         # msg size depends on the board size, byte size of 100x100 grid is 40113; Byte size of 15x15 grid is 1013
         MESSAGE_SIZE = 1061 # This is hard coded for our demo purpose
-        input_from_client_bytes = self.receive_complete_bytestream(conn, MESSAGE_SIZE, MAX_BUFFER_SIZE)
+        input_from_client_bytes = Helper.receive_complete_bytestream(conn, MESSAGE_SIZE, MAX_BUFFER_SIZE)
     
         print("[SERVER] Input from client received competely")
         print(input_from_client_bytes)

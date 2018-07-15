@@ -89,10 +89,10 @@ class Server:
     def client_thread(self,conn, ip, port, MAX_BUFFER_SIZE = 65536):
         '''
         Thread starts when a client dials in
-        :param conn:
-        :param ip:
-        :param port:
-        :param MAX_BUFFER_SIZE:
+        :param conn: Connection
+        :param ip: Ip adress of client
+        :param port: Port
+        :param MAX_BUFFER_SIZE: maximum byte size of a processed message until exception is thrown
         :return:
         '''
         print("[SERVER] Server Thread started")
@@ -176,6 +176,8 @@ class Server:
                 traceback.print_exc()
         server_socket.close()
 
+
+# --------------------- START MAIN -------------------------
 if __name__== '__main__':
     print(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
     server = Server()

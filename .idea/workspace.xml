@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="04f91434-9e72-4a6c-95f2-8a9347fca6f5" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GameOfLife/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/GameOfLife/client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GameOfLife/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/GameOfLife/server.py" afterDir="false" />
     </list>
@@ -15,15 +14,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="run.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/run.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" selection-start-line="14" selection-end-line="14" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
@@ -36,11 +26,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="client.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GameOfLife/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="195" column="39" lean-forward="true" selection-start-line="195" selection-end-line="196" />
+            <state relative-caret-position="105">
+              <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="encryption.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GameOfLife/encryption.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="16" column="17" lean-forward="true" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
+              <folding>
+                <element signature="e#98#110#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -56,13 +58,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GameOfLife/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="772">
-              <caret line="178" lean-forward="true" selection-start-line="178" selection-end-line="178" />
+            <state relative-caret-position="210">
+              <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="server_simulation.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GameOfLife/server_simulation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="42" selection-start-line="1" selection-start-column="42" selection-end-line="1" selection-end-column="42" />
               <folding>
-                <element signature="e#101#114#0" expanded="true" />
+                <element signature="e#53#69#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -98,20 +109,11 @@
       <file leaf-file-name="gameOfLife.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GameOfLife/gameOfLife.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2595">
+            <state relative-caret-position="2700">
               <caret line="180" selection-start-line="180" selection-end-line="180" />
               <folding>
                 <element signature="e#99#117#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="25" selection-start-line="2" selection-start-column="25" selection-end-line="2" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -155,8 +157,8 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/GameOfLife/helper.py" />
         <option value="$PROJECT_DIR$/GameOfLife/gameOfLife.py" />
-        <option value="$PROJECT_DIR$/GameOfLife/client.py" />
         <option value="$PROJECT_DIR$/GameOfLife/server.py" />
+        <option value="$PROJECT_DIR$/GameOfLife/client.py" />
       </list>
     </option>
   </component>
@@ -289,12 +291,12 @@
       <updated>1531397464588</updated>
       <workItem from="1531397466808" duration="12317000" />
       <workItem from="1531576878887" duration="3916000" />
-      <workItem from="1531651484495" duration="670000" />
+      <workItem from="1531651484495" duration="1388000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16903000" />
+    <option name="totallyTimeSpent" value="17621000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1720" y="23" width="1720" height="1363" extended-state="0" />
@@ -373,9 +375,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-          <folding>
-            <element signature="e#101#114#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -471,20 +470,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GameOfLife/server_simulation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="42" selection-start-line="1" selection-start-column="42" selection-end-line="1" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GameOfLife/encryption.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="16" column="17" lean-forward="true" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Dockerfile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
@@ -553,6 +538,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GameOfLife/server_simulation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="42" selection-start-line="1" selection-start-column="42" selection-end-line="1" selection-end-column="42" />
+          <folding>
+            <element signature="e#53#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GameOfLife/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GameOfLife/helper.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -562,7 +564,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GameOfLife/gameOfLife.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2595">
+        <state relative-caret-position="2700">
           <caret line="180" selection-start-line="180" selection-end-line="180" />
           <folding>
             <element signature="e#99#117#0" expanded="true" />
@@ -570,20 +572,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GameOfLife/client.py">
+    <entry file="file://$PROJECT_DIR$/GameOfLife/encryption.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="195" column="39" lean-forward="true" selection-start-line="195" selection-end-line="196" />
+        <state relative-caret-position="240">
+          <caret line="16" column="17" lean-forward="true" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
+          <folding>
+            <element signature="e#98#110#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GameOfLife/server.py">
+    <entry file="file://$PROJECT_DIR$/GameOfLife/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="772">
-          <caret line="178" lean-forward="true" selection-start-line="178" selection-end-line="178" />
-          <folding>
-            <element signature="e#101#114#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="105">
+          <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
         </state>
       </provider>
     </entry>

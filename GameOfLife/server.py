@@ -6,25 +6,22 @@
 
 '''
 
-import pickle
 import numpy as np
 import socket
 from threading import Thread
 import traceback
 import sys
-import random
 from io import BytesIO
 from time import gmtime, strftime
-
 from GameOfLife.helper import Helper
 
-'''
-This server is started in parallel with the client. For the extension of the functionality,
-the homomorphic operations could be further implemented in this class once the issues
-of serializing PySEAL objects (i.e. Ciphertext and Context) are resolved. There were already github
-issues regarding that issued. Currently the server just supports the non-homomorphic-encrypted
-operations to compute the next state of the game of live.
-'''
+
+# This server is started in parallel with the client. For the extension of the functionality,
+# the homomorphic operations could be further implemented in this class once the issues
+# of serializing PySEAL objects (i.e. Ciphertext and Context) are resolved. There were already github
+# issues regarding that issued. Currently the server just supports the non-homomorphic-encrypted
+# operations to compute the next state of the game of live.
+
 
 class gol_methods:
     '''

@@ -6,7 +6,6 @@
 """
 
 import tkinter
-from tkinter import *
 import time
 from time import gmtime, strftime
 import threading

@@ -19,7 +19,10 @@ To run GUI applications using Docker for Mac, it is neccessary to install XQuart
 * Clone repository
 
 ## Run the Application
-There are shell scripts that are used to run the application. The most important ones are the following:
-* `build.sh`: Builds the docker image and creates the python wrapper for SEAL
-* `run.sh`: Runs the docker container. To run this for ubuntu, the code for Ubuntu needs to be uncomment. This script starts the GUI client and the server in two separate terminals by executing `main.sh`
-* `debug.sh`: This script copies the content of the terminals and writes it into a `log_server` and `log_client` file. This was usually used for debugging purposes after the application was stopped 
+There are shell scripts that are used to run the application. Execute these to run the application:
+1. Execute the `build.sh` script to build the image from the Dockerfile.  This also builds the Python wrapper for the SEAL.
+2.  Execute the`run.sh` script to run a container derived from the previously built image
+   and allow the GUI to connect to the host’s display.  This script consists of two parts
+   as different solutions were needed for macOS and Ubuntu 18.04.
+3. (optionally) Execute the `debug.sh` script to copy the log files of the server and the
+   client from the container to the host. This can be used for debugging. 

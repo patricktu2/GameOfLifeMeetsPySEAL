@@ -4,6 +4,8 @@
 
 This is a implementation of Cornway's Game of Life in python using homomorphic encryption with the PySEAL library (https://github.com/Lab41/PySEAL). PySEAL is a python wrapper of the Simple Encrypted Arithmetic Library (SEAL) developed by Microsoft. The scope of this project includes a GUI using tkinter in python and a (simulated) server that is performing the computational operations.
 
+Blog Post: https://www.patrick-tu.com/blog-backend/2018/7/30/homomorphic-encryption-conways-game-of-life-meets-the-simple-encrypted-arithmetic-library-seal
+
 ## Dependencies
 
 ### Docker
